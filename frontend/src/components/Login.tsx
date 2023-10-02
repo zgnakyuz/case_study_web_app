@@ -34,7 +34,7 @@ const Login: React.FC<Props> = () => {
 
     login(username, password).then(
       () => {
-        navigate("/home");
+        navigate("/");
         window.location.reload();
       },
       (error) => {

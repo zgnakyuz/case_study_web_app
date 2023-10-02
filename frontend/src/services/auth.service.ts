@@ -26,7 +26,10 @@ export const login = (username: string, password: string) => {
 };
 
 export const logout = () => {
-  localStorage.removeItem("user");
+  return new Promise<void>((resolve) => {
+    localStorage.removeItem("user");
+    resolve();
+  });
 };
 
 export const getCurrentUser = () => {
