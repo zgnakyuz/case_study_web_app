@@ -78,9 +78,9 @@ const App: React.FC = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <a href="/login" className="nav-link" onClick={logOut}>
-                LogOut
-              </a>
+              <Link to={"/login"} className="nav-link" onClick={logOut}>
+                Log Out
+              </Link>
             </li>
           </div>
         ) : (
