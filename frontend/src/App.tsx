@@ -11,7 +11,6 @@ import IUser from './types/user.type';
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
-import BoardUser from "./components/BoardUser";
 import BoardAdmin from "./components/BoardAdmin";
 
 import EventBus from "./common/EventBus";
@@ -114,7 +113,6 @@ const App: React.FC = () => {
           <Route path="/home" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/user" element={<BoardUser />} />
           <Route path="/admin" element={<BoardAdmin />} />
         </Routes>
       </div>
