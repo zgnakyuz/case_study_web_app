@@ -73,7 +73,7 @@ const App: React.FC = () => {
         <div className="navbar-nav mr-auto">
           <li className="nav-item">
             <Link to={"/"} className="nav-link">
-              Main Page
+              Store
             </Link>
           </li>
 
