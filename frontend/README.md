@@ -11,7 +11,7 @@ In the project directory, you can run:
 ### Set port
 .env
 ```
-PORT=8081
+PORT=3000
 ```
 
 Runs the app in the development mode.\
