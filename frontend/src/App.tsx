@@ -71,24 +71,10 @@ const App: React.FC = () => {
           VendingMachine
         </Link>
         <div className="navbar-nav mr-auto">
-          <li className="nav-item">
-            <Link to={"/"} className="nav-link">
-              Store
-            </Link>
-          </li>
-
           {isUserAdmin && (
             <li className="nav-item">
               <Link to={"/admin"} className="nav-link">
                 Admin Board
-              </Link>
-            </li>
-          )}
-
-          {!isUserAdmin && currentUser && (
-            <li className="nav-item">
-              <Link to={"/user"} className="nav-link">
-                User
               </Link>
             </li>
           )}
