@@ -16,7 +16,7 @@ import BoardAdmin from "./components/BoardAdmin";
 import EventBus from "./common/EventBus";
 
 const App: React.FC = () => {
-  const [showAdminBoard, setShowAdminBoard] = useState<boolean>(false);
+  const [isUserAdmin, setIsUserAdmin] = useState<boolean | undefined>(undefined);
   const [currentUser, setCurrentUser] = useState<IUser | undefined>(undefined);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const App: React.FC = () => {
 
     if (user) {
       setCurrentUser(user);
-      setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
+      setIsUserAdmin(user.roles.includes("ROLE_ADMIN"));
     }
 
     EventBus.on("logout", logOut);
@@ -36,7 +36,7 @@ const App: React.FC = () => {
 
   const logOut = () => {
     AuthService.logout();
-    setShowAdminBoard(false);
+    setIsUserAdmin(undefined);
     setCurrentUser(undefined);
   };
 
@@ -53,7 +53,7 @@ const App: React.FC = () => {
             </Link>
           </li>
 
-          {showAdminBoard && (
+          {isUserAdmin && (
             <li className="nav-item">
               <Link to={"/admin"} className="nav-link">
                 Admin Board
@@ -61,7 +61,7 @@ const App: React.FC = () => {
             </li>
           )}
 
-          {currentUser && (
+          {!isUserAdmin && currentUser && (
             <li className="nav-item">
               <Link to={"/user"} className="nav-link">
                 User
@@ -72,11 +72,9 @@ const App: React.FC = () => {
 
         {currentUser ? (
           <div className="navbar-nav ml-auto">
-            <li className="nav-item">
-              <Link to={"/profile"} className="nav-link">
-                {currentUser.username}
-              </Link>
-            </li>
+            <span className="nav-link">
+              {currentUser.username}
+            </span>
             <li className="nav-item">
               <Link to={"/login"} className="nav-link" onClick={logOut}>
                 Log Out
