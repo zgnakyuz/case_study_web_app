@@ -13,6 +13,7 @@ const Register: React.FC = () => {
     username: "",
     email: "",
     password: "",
+    money: 0
   };
 
   const validationSchema = Yup.object().shape({

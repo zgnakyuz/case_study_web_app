@@ -47,6 +47,7 @@ const App: React.FC = () => {
       .then(() => {
         setIsUserAdmin(undefined);
         setCurrentUser(undefined);
+        window.location.reload();
         setSnackbarAlertType("success")
         setSnackbarMessage("Logout successful.");
         setIsSnackbarOpen(true);
