@@ -1,0 +1,37 @@
+.container {
+    display: flex;
+  }
+  
+  .product-grid {
+    display: flex;
+    width: 100%;
+  }
+  
+  .product-side {
+    flex: 3;
+    padding: 10px;
+    border: 1px solid #ccc;
+  }
+  
+  .balance-side {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+  }
+
+  .product-info {
+    padding: 10px;
+  }
+  
+  .user-balance {
+    padding: 10px;
+  }
+  
+  .insert-coin {
+    padding: 10px;
+  }
+  
+  .coin-button {
+    margin-top: 10px;
+    margin-right: 25px; /* Add margin between buttons */
+  }
