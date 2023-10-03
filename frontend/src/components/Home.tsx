@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from "react";
 
 import { getAllProducts, getSelectedProduct } from "../services/user.service";
-import { Product } from "../types/product";
 import IUser from '../types/user.type';
 import * as AuthService from "../services/auth.service";
 import Swal from 'sweetalert2';
 import { title } from "process";
 
+export interface ProductStockQueryResponse {
+  productStockId: number,
+  count: number,
+  productId: number,
+  name: string,
+  price: number,
+}
+
 const Home: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([])
+  const [productStockQueryResponse, setProductsStockQueryResponse] = useState<ProductStockQueryResponse[]>([])
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState<IUser | undefined>(undefined);
 
@@ -21,7 +28,7 @@ const Home: React.FC = () => {
 
     getAllProducts().then(
       (response) => {
-        setProducts(response.data);
+        setProductsStockQueryResponse(response.data);
         setLoading(false);
       },
       (error) => {
@@ -31,7 +38,7 @@ const Home: React.FC = () => {
           error.toString();
         setLoading(false);
 
-        setProducts(_content);
+        setProductsStockQueryResponse(_content);
       }
     );
   }, []);
@@ -40,10 +47,9 @@ const Home: React.FC = () => {
     getSelectedProduct(productId).then(
       (response) => {
         if (response.data) {
-          const selectedProduct = response.data;
-          console.log(selectedProduct);
+          const product = response.data;
           if (currentUser) {
-            if (currentUser.money >= selectedProduct.price) {
+            if (currentUser.money >= product.price) {
               Swal.fire({
                 title: 'Confirmation',
                 text: 'Do you want to continue with this purchase?',
@@ -63,7 +69,7 @@ const Home: React.FC = () => {
               Swal.fire({title: 'User cannot afford the selected product.'});
             }
           } else {
-            Swal.fire({title: 'User error!'});
+            Swal.fire({title: 'User undefined!'});
           }
         }
         setLoading(false);
@@ -84,15 +90,15 @@ const Home: React.FC = () => {
         <p>Loading...</p>
       ) : (
         <div className="product-grid">
-          {products.map((product) => (
-            <div key={product.id} className="product">
+          {productStockQueryResponse.map((product) => (
+            <div key={product.productStockId} className="product">
               <div className="product-info">
                 <h4>{product.name}</h4>
                 <p>Price: ${product.price}</p>
                 <p>{product.count} in stock</p>
               </div>
               {currentUser && currentUser.roles?.includes("ROLE_USER") && (
-                <button onClick={() => handleSelectProduct(product.id)}>
+                <button onClick={() => handleSelectProduct(product.productStockId)}>
                   Select
                 </button>
               )}
