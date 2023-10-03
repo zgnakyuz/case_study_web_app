@@ -8,12 +8,16 @@ import com.casestudy.backend.role.Role;
 import com.casestudy.backend.role.RoleRepository;
 import com.casestudy.backend.user.User;
 import com.casestudy.backend.user.UserRepository;
+import com.casestudy.backend.vendingmachine.VendingMachineServiceImpl;
+import com.casestudy.backend.vendingmachine.productstock.ProductStock;
+import com.casestudy.backend.vendingmachine.productstock.ProductStockRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import jakarta.transaction.Transactional;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -27,15 +31,24 @@ public class DatabasePopulator {
 
     private final ProductRepository productRepository;
 
-    public DatabasePopulator(final PasswordEncoder passwordEncoder, RoleRepository roleRepository, UserRepository userRepository, ProductRepository productRepository) {
+    private final ProductStockRepository productStockRepository;
+
+    private final VendingMachineServiceImpl vendingMachineService;
+
+    public DatabasePopulator(final PasswordEncoder passwordEncoder, RoleRepository roleRepository, UserRepository userRepository, ProductRepository productRepository, ProductStockRepository productStockRepository, VendingMachineServiceImpl vendingMachineService) {
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.productStockRepository = productStockRepository;
+        this.vendingMachineService = vendingMachineService;
     }
 
     @Transactional
     public void populateDatabase() {
+
+        vendingMachineService.start();
+
         if (!roleRepository.existsByUserType(UserType.ROLE_USER)) {
             roleRepository.save(new Role(UserType.ROLE_USER));
         }
@@ -71,18 +84,26 @@ public class DatabasePopulator {
         }
 
         if (!productRepository.existsByNameIgnoreCase("Water")) {
-            Product product = new Product("Water", 25, 20);
+            Product product = new Product("Water", 25);
             productRepository.save(product);
         }
 
         if (!productRepository.existsByNameIgnoreCase("Coke")) {
-            Product product = new Product("Coke", 35, 20);
+            Product product = new Product("Coke", 35);
             productRepository.save(product);
         }
 
         if (!productRepository.existsByNameIgnoreCase("Soda")) {
-            Product product = new Product("Soda", 45, 20);
+            Product product = new Product("Soda", 45);
             productRepository.save(product);
         }
+
+        List<Product> products = productRepository.findAll();
+        products.stream().forEach(product -> {
+            if (!productStockRepository.existsByProductId(product.getId())) {
+                ProductStock productStock = new ProductStock(product, 15);
+                productStockRepository.save(productStock);
+            }
+        });
     }
 }

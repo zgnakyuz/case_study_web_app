@@ -1,9 +1,6 @@
 package com.casestudy.backend.product;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,13 +23,8 @@ public class Product {
 
     private Integer price;
 
-    @Min(0)
-    @Max(20)
-    private Integer count;
-
-    public Product(String name, int price, int count) {
+    public Product(String name, int price) {
         this.name = name;
         this.price = price;
-        this.count = count;
     }
 }
