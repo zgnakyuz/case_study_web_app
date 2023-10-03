@@ -35,7 +35,10 @@ public class DatabasePopulator {
 
     private final VendingMachineServiceImpl vendingMachineService;
 
-    public DatabasePopulator(final PasswordEncoder passwordEncoder, RoleRepository roleRepository, UserRepository userRepository, ProductRepository productRepository, ProductStockRepository productStockRepository, VendingMachineServiceImpl vendingMachineService) {
+    public DatabasePopulator(final PasswordEncoder passwordEncoder, final RoleRepository roleRepository,
+                             final UserRepository userRepository, final ProductRepository productRepository,
+                             final ProductStockRepository productStockRepository,
+                             final VendingMachineServiceImpl vendingMachineService) {
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
@@ -78,6 +81,19 @@ public class DatabasePopulator {
 
             User user = new User("ozgun", "zgnakyuz@gmail.com",
                     passwordEncoder.encode("ozgun"), 1000);
+
+            user.setRoles(roles);
+            userRepository.save(user);
+        }
+
+        if (!userRepository.existsByEmail("testUser@gmail.com")) {
+            Set<Role> roles = new HashSet<>();
+            Role userRole = roleRepository.findByUserType(UserType.ROLE_USER)
+                    .orElseThrow(() -> new RuntimeException("Error: Authority is not found."));
+            roles.add(userRole);
+
+            User user = new User("testUser", "testUser@gmail.com",
+                    passwordEncoder.encode("testUser"), 100);
 
             user.setRoles(roles);
             userRepository.save(user);

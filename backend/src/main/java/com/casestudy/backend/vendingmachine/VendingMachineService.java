@@ -12,9 +12,9 @@ public interface VendingMachineService {
     public VendingMachine getState();
     public void saveState(VendingMachine vendingMachine);
 
-    public long selectItemAndGetPrice(Product product);
+    public void dispenseProduct(Product product);
 
-    public void insertCoin(CoinType coin);
+    public void insertCoin(CoinType coin, Long userId) throws Exception;
 
     public List<CoinType> refund();
 

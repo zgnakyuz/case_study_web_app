@@ -16,12 +16,16 @@ public class VendingMachine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer userBalance;
+    private Integer tempMoney;
 
     private Integer totalMoney;
 
-    public VendingMachine(Integer userBalance, Integer totalMoney) {
-        this.userBalance = userBalance;
+    public VendingMachine(Integer tempMoney, Integer totalMoney) {
+        this.tempMoney = tempMoney;
         this.totalMoney = totalMoney;
+    }
+
+    public void addCoinToTempMoney(Integer coin) {
+        tempMoney += coin;
     }
 }

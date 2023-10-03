@@ -2,18 +2,29 @@ package com.casestudy.backend.vendingmachine;
 
 import com.casestudy.backend.common.enums.CoinType;
 import com.casestudy.backend.product.Product;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.casestudy.backend.user.User;
+import com.casestudy.backend.user.UserRepository;
+import com.casestudy.backend.user.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VendingMachineServiceImpl implements VendingMachineService {
 
     private VendingMachine vendingMachine;
 
-    @Autowired
-    private VendingMachineRepository vendingMachineRepository;
+    private final VendingMachineRepository vendingMachineRepository;
+
+    private final UserService userService;
+
+    public VendingMachineServiceImpl(final VendingMachineRepository vendingMachineRepository,
+                                     final UserService userService) {
+        this.vendingMachineRepository = vendingMachineRepository;
+        this.userService = userService;
+    }
 
     @Override
     public void start() {
@@ -49,13 +60,15 @@ public class VendingMachineServiceImpl implements VendingMachineService {
     }
 
     @Override
-    public long selectItemAndGetPrice(Product product) {
-        return 0;
+    public void dispenseProduct(Product product) {
     }
 
     @Override
-    public void insertCoin(CoinType coin) {
-
+    public void insertCoin(CoinType coin, Long userId) throws Exception {
+        int coinValue = coin.getValue();
+        userService.withdrawMoney(coinValue, userId);
+        vendingMachine.addCoinToTempMoney(coinValue);
+        saveState(vendingMachine);
     }
 
     @Override

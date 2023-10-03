@@ -6,7 +6,6 @@ import com.casestudy.backend.security.jwt.JwtUtils;
 import com.casestudy.backend.security.services.UserDetailsImpl;
 import com.casestudy.backend.user.UserRepository;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,20 +22,29 @@ import java.util.stream.Collectors;
 @RequestMapping("/login")
 public class LoginController {
 
-    @Autowired
-    AuthenticationManager authenticationManager;
 
-    @Autowired
-    UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    RoleRepository roleRepository;
 
-    @Autowired
-    PasswordEncoder encoder;
+    private final UserRepository userRepository;
 
-    @Autowired
-    JwtUtils jwtUtils;
+
+    private final RoleRepository roleRepository;
+
+
+    private final PasswordEncoder encoder;
+
+
+    private final JwtUtils jwtUtils;
+
+    public LoginController(final AuthenticationManager authenticationManager, final UserRepository userRepository,
+                           final RoleRepository roleRepository, final PasswordEncoder encoder, final JwtUtils jwtUtils) {
+        this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.encoder = encoder;
+        this.jwtUtils = jwtUtils;
+    }
 
     @PostMapping()
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {

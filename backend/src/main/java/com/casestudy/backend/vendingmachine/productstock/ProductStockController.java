@@ -14,7 +14,7 @@ public class ProductStockController {
 
     private final ProductStockService productStockService;
 
-    public ProductStockController(ProductStockService productStockService) {
+    public ProductStockController(final ProductStockService productStockService) {
         this.productStockService = productStockService;
     }
 

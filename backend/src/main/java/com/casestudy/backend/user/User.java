@@ -53,4 +53,8 @@ public class User {
         this.password = password;
         this.money = money;
     }
+
+    public void withdrawMoney(int money) {
+        this.money -= money;
+    }
 }

@@ -1,23 +1,42 @@
 package com.casestudy.backend.vendingmachine;
 
+import com.casestudy.backend.common.enums.CoinType;
+import com.casestudy.backend.common.response.ErrorResponse;
+import com.casestudy.backend.common.response.MessageResponse;
 import com.casestudy.backend.product.Product;
 import com.casestudy.backend.vendingmachine.productstock.ProductStock;
+import com.casestudy.backend.vendingmachine.productstock.ProductStockQueryResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/machine")
 public class VendingMachineController {
 
     private final VendingMachineServiceImpl vendingMachineService;
 
-    public VendingMachineController(VendingMachineServiceImpl vendingMachineService) {
+    public VendingMachineController(final VendingMachineServiceImpl vendingMachineService) {
         this.vendingMachineService = vendingMachineService;
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getMachineState() {
+        return ResponseEntity.ok(vendingMachineService.getState());
+    }
+
+    @PutMapping("/balance/{coinType}")
+    public ResponseEntity<?> insertCoin(@PathVariable CoinType coinType, @RequestParam("userId") Long userId) {
+        try {
+            vendingMachineService.insertCoin(coinType, userId);
+            return ResponseEntity.ok(new MessageResponse("%s TL inserted successfully!".formatted(coinType.getValue())));
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(errorMessage));
+        }
     }
 }

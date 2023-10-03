@@ -8,7 +8,6 @@ import com.casestudy.backend.security.jwt.JwtUtils;
 import com.casestudy.backend.user.User;
 import com.casestudy.backend.user.UserRepository;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,20 +21,25 @@ import java.util.Set;
 @RequestMapping("/registration")
 public class RegistrationController {
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
-    @Autowired
-    PasswordEncoder encoder;
+    private final PasswordEncoder encoder;
 
-    @Autowired
-    JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
+
+    public RegistrationController(final AuthenticationManager authenticationManager, final UserRepository userRepository,
+                                  final RoleRepository roleRepository, final PasswordEncoder encoder, final JwtUtils jwtUtils) {
+        this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.encoder = encoder;
+        this.jwtUtils = jwtUtils;
+    }
+
 
     @PostMapping()
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationRequest registrationRequest) {
