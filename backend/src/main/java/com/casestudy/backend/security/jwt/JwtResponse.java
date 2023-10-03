@@ -1,5 +1,7 @@
 package com.casestudy.backend.security.jwt;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+
 import java.util.List;
 
 public class JwtResponse {
@@ -8,13 +10,16 @@ public class JwtResponse {
   private Long id;
   private String username;
   private String email;
+
+  private Integer money;
   private List<String> roles;
 
-  public JwtResponse(String accessToken, Long id, String username, String email, List<String> roles) {
+  public JwtResponse(String accessToken, Long id, String username, String email, Integer money, List<String> roles) {
     this.token = accessToken;
     this.id = id;
     this.username = username;
     this.email = email;
+    this.money = money;
     this.roles = roles;
   }
 
@@ -56,6 +61,14 @@ public class JwtResponse {
 
   public void setUsername(String username) {
     this.username = username;
+  }
+
+  public Integer getMoney() {
+    return money;
+  }
+
+  public void setMoney(Integer money) {
+    this.money = money;
   }
 
   public List<String> getRoles() {

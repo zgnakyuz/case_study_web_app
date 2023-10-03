@@ -48,7 +48,7 @@ public class LoginControllerTest {
         Authentication authentication = mock(Authentication.class);
 
         // Mock UserDetailsImpl
-        UserDetailsImpl userDetails = new UserDetailsImpl(1L, "testUser", "test@example.com", "testPassword", Collections.emptyList());
+        UserDetailsImpl userDetails = new UserDetailsImpl(1L, "testUser", "test@example.com", "testPassword", 5, Collections.emptyList());
 
         // Mock JWT Token
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);

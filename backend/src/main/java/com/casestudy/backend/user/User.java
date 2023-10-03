@@ -6,6 +6,7 @@ import java.util.Set;
 import com.casestudy.backend.role.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -39,13 +40,17 @@ public class User {
     @Size(max = 120)
     private String password;
 
+    @Min(0)
+    private Integer money;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public User(String username, String email, String password) {
+    public User(String username, String email, String password, int money) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.money = money;
     }
 }

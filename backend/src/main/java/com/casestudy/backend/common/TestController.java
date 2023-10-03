@@ -10,10 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class TestController {
-  @GetMapping("/all")
-  public String allAccess() {
-    return "Public Content.";
-  }
 
   @GetMapping("/admin")
   @PreAuthorize("hasRole('ADMIN')")
