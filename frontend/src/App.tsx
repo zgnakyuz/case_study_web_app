@@ -10,7 +10,7 @@ import IUser from './types/user.type';
 
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Home from "./components/Home";
+import Home from "./components/Home/Home";
 import BoardAdmin from "./components/BoardAdmin";
 
 import EventBus from "./common/EventBus";
@@ -23,19 +23,24 @@ const App: React.FC = () => {
   const [snackbarAlertType, setSnackbarAlertType] = useState<AlertColor | undefined>(undefined);
 
   useEffect(() => {
-    const user = AuthService.getCurrentUser();
-
-    if (user) {
-      setCurrentUser(user);
-      setIsUserAdmin(user.roles.includes("ROLE_ADMIN"));
-    }
-
+    const fetchUserData = async () => {
+      const updatedUser = await AuthService.getCurrentUser();
+  
+      if (updatedUser) {
+        setCurrentUser(updatedUser);
+        setIsUserAdmin(updatedUser.roles.includes("ROLE_ADMIN"));
+      }
+    };
+  
+    fetchUserData(); // Call the function to fetch user data
+  
     EventBus.on("logout", logOut);
-
+  
     return () => {
       EventBus.remove("logout", logOut);
     };
   }, []);
+  
 
   const closeSnackbar = () => {
     setIsSnackbarOpen(false);

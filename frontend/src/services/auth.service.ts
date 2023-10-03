@@ -32,9 +32,27 @@ export const logout = () => {
   });
 };
 
-export const getCurrentUser = () => {
+export const getCurrentUser = async () => {
   const userStr = localStorage.getItem("user");
-  if (userStr) return JSON.parse(userStr);
+  if (userStr) {
+    const cachedUser = JSON.parse(userStr);
+
+    try {
+      const response = await fetchUserById(cachedUser.id);
+      const updatedUser = response.data;
+
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+
+      return updatedUser;
+    } catch (error) {
+      console.error("Error fetching updated user data:", error);
+      return cachedUser;
+    }
+  }
 
   return null;
+};
+
+export const fetchUserById = (userId: number) => {
+  return axios.get(API_URL + "users/" + userId);
 };
