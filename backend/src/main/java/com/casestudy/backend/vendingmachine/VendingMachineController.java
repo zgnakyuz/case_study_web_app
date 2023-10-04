@@ -39,4 +39,15 @@ public class VendingMachineController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(errorMessage));
         }
     }
+
+    @PutMapping("/productStock/{productStockId}")
+    public ResponseEntity<?> dispenseProduct(@PathVariable Long productStockId) {
+        try {
+            String productName = vendingMachineService.dispenseProduct(productStockId);
+            return ResponseEntity.ok(new MessageResponse("Purchase successful: %s".formatted(productName)));
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(errorMessage));
+        }
+    }
 }

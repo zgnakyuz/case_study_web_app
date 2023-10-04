@@ -1,15 +1,12 @@
 package com.casestudy.backend.vendingmachine;
 
 import com.casestudy.backend.common.enums.CoinType;
-import com.casestudy.backend.product.Product;
-import com.casestudy.backend.user.User;
-import com.casestudy.backend.user.UserRepository;
 import com.casestudy.backend.user.UserService;
-import jakarta.persistence.EntityNotFoundException;
+import com.casestudy.backend.vendingmachine.productstock.ProductStock;
+import com.casestudy.backend.vendingmachine.productstock.ProductStockService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class VendingMachineServiceImpl implements VendingMachineService {
@@ -20,10 +17,13 @@ public class VendingMachineServiceImpl implements VendingMachineService {
 
     private final UserService userService;
 
+    private final ProductStockService productStockService;
+
     public VendingMachineServiceImpl(final VendingMachineRepository vendingMachineRepository,
-                                     final UserService userService) {
+                                     final UserService userService, ProductStockService productStockService) {
         this.vendingMachineRepository = vendingMachineRepository;
         this.userService = userService;
+        this.productStockService = productStockService;
     }
 
     @Override
@@ -60,14 +60,27 @@ public class VendingMachineServiceImpl implements VendingMachineService {
     }
 
     @Override
-    public void dispenseProduct(Product product) {
+    public String dispenseProduct(Long productStockId) throws Exception {
+        final ProductStock productInStock = productStockService.isProductInStock(productStockId);
+
+        if (productInStock.getProduct() != null) {
+            int price = productInStock.getProduct().getPrice();
+            vendingMachine.updateTempMoney(vendingMachine.getTempMoney() - price);
+            vendingMachine.updateTotalMoney(vendingMachine.getTotalMoney() + price);
+            productStockService.dispenseProduct(productStockId);
+        } else {
+            throw new Exception("Product is out of stock!");
+        }
+
+        saveState(vendingMachine);
+        return productInStock.getProduct().getName();
     }
 
     @Override
     public void insertCoin(CoinType coin, Long userId) throws Exception {
-        int coinValue = coin.getValue();
+        final int coinValue = coin.getValue();
         userService.withdrawMoney(coinValue, userId);
-        vendingMachine.addCoinToTempMoney(coinValue);
+        vendingMachine.updateTempMoney(vendingMachine.getTempMoney() + coinValue);
         saveState(vendingMachine);
     }
 

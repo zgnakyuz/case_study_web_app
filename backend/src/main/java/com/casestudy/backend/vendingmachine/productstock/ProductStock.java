@@ -38,4 +38,8 @@ public class ProductStock {
         this.product = product;
         this.count = count;
     }
+
+    public void updateCount(int count) {
+        this.count = count;
+    }
 }

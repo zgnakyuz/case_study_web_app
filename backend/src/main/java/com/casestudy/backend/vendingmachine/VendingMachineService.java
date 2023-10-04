@@ -12,7 +12,7 @@ public interface VendingMachineService {
     public VendingMachine getState();
     public void saveState(VendingMachine vendingMachine);
 
-    public void dispenseProduct(Product product);
+    public String dispenseProduct(Long productStockId) throws Exception;
 
     public void insertCoin(CoinType coin, Long userId) throws Exception;
 

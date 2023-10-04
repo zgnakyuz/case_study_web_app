@@ -53,7 +53,7 @@ public class RegistrationController {
 
         // Create new user's account
         User user = new User(registrationRequest.getUsername(), registrationRequest.getEmail(),
-                encoder.encode(registrationRequest.getPassword()), 0);
+                encoder.encode(registrationRequest.getPassword()), 100);
 
         Set<Role> roles = new HashSet<>();
         Role userRole = roleRepository.findByUserType(UserType.ROLE_USER)

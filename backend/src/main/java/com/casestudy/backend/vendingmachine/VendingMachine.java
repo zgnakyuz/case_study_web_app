@@ -25,7 +25,11 @@ public class VendingMachine {
         this.totalMoney = totalMoney;
     }
 
-    public void addCoinToTempMoney(Integer coin) {
-        tempMoney += coin;
+    public void updateTempMoney(int tempMoney) {
+        this.tempMoney = tempMoney;
+    }
+
+    public void updateTotalMoney(int totalMoney) {
+        this.totalMoney = totalMoney;
     }
 }
