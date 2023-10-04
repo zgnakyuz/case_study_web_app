@@ -2,6 +2,7 @@ package com.casestudy.backend.vendingmachine;
 
 import com.casestudy.backend.common.enums.CoinType;
 import com.casestudy.backend.product.Product;
+import com.casestudy.backend.user.AdminPanelResponse;
 import com.casestudy.backend.vendingmachine.productstock.ProductStock;
 import org.springframework.data.util.Pair;
 
@@ -20,4 +21,8 @@ public interface VendingMachineService {
     public int refund(Long userId);
 
     public void reset();
+
+    public int collectMoney(Long userId);
+
+    public AdminPanelResponse getAdminPanelInfo();
 }

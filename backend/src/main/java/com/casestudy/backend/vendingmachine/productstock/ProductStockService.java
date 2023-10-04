@@ -30,12 +30,23 @@ public class ProductStockService {
 
     public ProductStock isProductInStock(Long id) {
         ProductStock productStock = getProductById(id);
+
         return productStock.getCount() > 0 ? productStock : null;
     }
 
     public void dispenseProduct(Long id) {
         ProductStock productStock = getProductById(id);
         productStock.updateCount(productStock.getCount() - 1);
+
         productStockRepository.save(productStock);
+    }
+
+    public void reset() {
+        List<ProductStock> productStocks = getAllProducts();
+        productStocks.stream().forEach(productStock -> {
+            productStock.updateCount(0);
+        });
+
+        productStockRepository.saveAll(productStocks);
     }
 }

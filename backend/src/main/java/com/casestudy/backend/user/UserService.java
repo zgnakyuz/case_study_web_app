@@ -1,6 +1,5 @@
 package com.casestudy.backend.user;
 
-import com.casestudy.backend.vendingmachine.productstock.ProductStock;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 

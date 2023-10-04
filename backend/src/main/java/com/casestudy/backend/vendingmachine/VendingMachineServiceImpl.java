@@ -1,6 +1,7 @@
 package com.casestudy.backend.vendingmachine;
 
 import com.casestudy.backend.common.enums.CoinType;
+import com.casestudy.backend.user.AdminPanelResponse;
 import com.casestudy.backend.user.User;
 import com.casestudy.backend.user.UserService;
 import com.casestudy.backend.vendingmachine.productstock.ProductStock;
@@ -31,6 +32,7 @@ public class VendingMachineServiceImpl implements VendingMachineService {
     @Override
     public void start() {
         VendingMachine vendingMachine = getState();
+
         saveState(vendingMachine);
     }
 
@@ -39,6 +41,7 @@ public class VendingMachineServiceImpl implements VendingMachineService {
         if (vendingMachine == null) {  // Singleton approach
             vendingMachine = loadStateFromDatabase();
         }
+
         return vendingMachine;
     }
 
@@ -54,6 +57,7 @@ public class VendingMachineServiceImpl implements VendingMachineService {
         if (savedState == null) {
             savedState = new VendingMachine(0, 0);
         }
+
         return savedState;
     }
 
@@ -86,6 +90,7 @@ public class VendingMachineServiceImpl implements VendingMachineService {
         final int coinValue = coin.getValue();
         userService.withdrawMoney(coinValue, userId);
         vendingMachine.updateTempMoney(vendingMachine.getTempMoney() + coinValue);
+
         saveState(vendingMachine);
     }
 
@@ -101,6 +106,28 @@ public class VendingMachineServiceImpl implements VendingMachineService {
 
     @Override
     public void reset() {
+        vendingMachine.updateTotalMoney(0);
+        vendingMachine.updateTempMoney(0);
+        productStockService.reset();
+        saveState(vendingMachine);
+    }
 
+    @Override
+    public int collectMoney(Long userId) {
+        final int totalMoney = vendingMachine.getTotalMoney();
+        vendingMachine.updateTotalMoney(0);
+        userService.addMoney(totalMoney, userId);
+
+        saveState(vendingMachine);
+        return totalMoney;
+    }
+
+    @Override
+    public AdminPanelResponse getAdminPanelInfo() {
+        int totalProductCountInStock = productStockService.getAllProducts().stream()
+                .mapToInt(ProductStock::getCount)
+                .sum();
+
+        return new AdminPanelResponse(vendingMachine.getTotalMoney(), totalProductCountInStock);
     }
 }
