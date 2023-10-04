@@ -33,4 +33,6 @@ in the file *application.properties* at resources folder in backend. By default,
 
 
 If you use these, a database named case_study must be created at your local Postgres server. Make sure that your port is 
-same (5432), and you can change your username and password with your credentials.
+same (5432), and you can change your username and password with your credentials. If you want to edit the properties, you need to
+generate the .jar file again. You can execute the command "mvn clean package" in cmd console (make sure the directory is backend folder).
+The newly generated file will be inside the "target" folder.
