@@ -1,9 +1,9 @@
 package com.casestudy.backend.vendingmachine.productstock;
 
 import com.casestudy.backend.product.Product;
+import com.casestudy.backend.product.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,8 +13,11 @@ public class ProductStockService {
 
     private final ProductStockRepository productStockRepository;
 
-    public ProductStockService(final ProductStockRepository productStockRepository) {
+    private final ProductRepository productRepository;
+
+    public ProductStockService(final ProductStockRepository productStockRepository, final ProductRepository productRepository) {
         this.productStockRepository = productStockRepository;
+        this.productRepository = productRepository;
     }
 
     private static final String PRODUCT_STOCK_WITH_ID_DOES_NOT_EXIST_MESSAGE = "Product stock with id %s does not exist!";
@@ -48,5 +51,22 @@ public class ProductStockService {
         });
 
         productStockRepository.saveAll(productStocks);
+    }
+
+    public ProductStock addToStocks(Long productStockId, int quantity) {
+        ProductStock productStock = getProductById(productStockId);
+        productStock.updateCount(productStock.getCount() + quantity);
+
+        productStockRepository.save(productStock);
+        return productStock;
+    }
+
+    public ProductStock changeProductPrice(Long productStockId, int newPrice) {
+        ProductStock productStock = getProductById(productStockId);
+        Product product = productStock.getProduct();
+        product.updatePrice(newPrice);
+
+        productRepository.save(product);
+        return productStock;
     }
 }

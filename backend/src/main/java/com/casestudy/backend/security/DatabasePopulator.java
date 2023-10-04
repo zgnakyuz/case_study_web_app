@@ -117,7 +117,7 @@ public class DatabasePopulator {
         List<Product> products = productRepository.findAll();
         products.stream().forEach(product -> {
             if (!productStockRepository.existsByProductId(product.getId())) {
-                ProductStock productStock = new ProductStock(product, 15);
+                ProductStock productStock = new ProductStock(product, 5);
                 productStockRepository.save(productStock);
             }
         });

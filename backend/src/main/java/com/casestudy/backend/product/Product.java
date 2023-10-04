@@ -27,4 +27,8 @@ public class Product {
         this.name = name;
         this.price = price;
     }
+
+    public void updatePrice(int price) {
+        this.price = price;
+    }
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { getAllProducts, getSelectedProduct } from "../../services/user.service";
+import { getAllProducts, getSelectedProduct, addToStocks, changeProductPrice } from "../../services/user.service";
 import { insertCoin, getMachineState, dispenseProductAndReturnChange, refund, reset, collectMoney } from "../../services/machine.service";
 import IUser from '../../types/user.type';
 import * as AuthService from "../../services/auth.service";
@@ -201,42 +201,105 @@ const Home: React.FC = () => {
     });
   }
 
-  const handleAddToStocks = () => {
-    // Swal.fire({
-    //   title: 'Confirmation',
-    //   text: 'Select the product you want to add stock',
-    //   icon: 'question',
-    //   showCancelButton: true,
-    //   confirmButtonText: 'Yes',
-    //   cancelButtonText: 'No',
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     collectMoney(currentUser?.id).then((response) => {
-    //       handleApiResponse(response, response.data.message);
-    //     }).catch((error) => {
-    //       handleApiResponse(error, error.response.data.message);
-    //     });
-    //   }
-    // });
-  }
+  const handleAddToStocks = async () => {
+    if (currentUser) {
+      const { value: formValues } = await Swal.fire({
+        title: 'Add products to stock',
+        html: `
+          <select id="swal-select" class="swal2-select">
+            ${productStockQueryResponse.map((product) => `
+              <option value="${product.productStockId}">${product.name}</option>
+            `).join('')}
+          </select>
+          <input id="swal-input" class="swal2-input" type="number" placeholder="Quantity">
+        `,
+        focusConfirm: false,
+        showCancelButton: true,
+        preConfirm: () => {
+          const selectInput = document.getElementById('swal-select') as HTMLSelectElement;
+          const input = document.getElementById('swal-input') as HTMLInputElement;
+          const productId = selectInput.value;
+          const quantity = input.value;
+          return { productId, quantity };
+        }
+      });
 
-  const handleRaiseDiscount = () => {
-    // Swal.fire({
-    //   title: 'Confirmation',
-    //   text: 'Select the product you want to add stock',
-    //   icon: 'question',
-    //   showCancelButton: true,
-    //   confirmButtonText: 'Yes',
-    //   cancelButtonText: 'No',
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     collectMoney(currentUser?.id).then((response) => {
-    //       handleApiResponse(response, response.data.message);
-    //     }).catch((error) => {
-    //       handleApiResponse(error, error.response.data.message);
-    //     });
-    //   }
-    // });
+      if (formValues) {
+        const { productId, quantity } = formValues;
+        console.log(productId, quantity);
+
+        const selectedProduct = productStockQueryResponse.find(product => product.productStockId === Number(productId));
+
+        Swal.fire({
+          title: 'Confirmation',
+          text: `Add ${quantity} of ${selectedProduct?.name} to stock?`,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'No',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            addToStocks(productId, quantity).then((response) => {
+              handleApiResponse(response, response.data.message);
+            }).catch((error) => {
+              handleApiResponse(error, error.response.data.message);
+            });
+          }
+        });
+      }
+    } else {
+      Swal.fire({ title: 'You do not have permission to perform this action!' });
+    }
+  };
+
+  const handleChangeProductPrice = async () => {
+    if (currentUser) {
+      const { value: formValues } = await Swal.fire({
+        title: 'Change price of a product',
+        html: `
+          <select id="swal-select" class="swal2-select">
+            ${productStockQueryResponse.map((product) => `
+              <option value="${product.productStockId}">${product.name}</option>
+            `).join('')}
+          </select>
+          <input id="swal-input" class="swal2-input" type="number" placeholder="New price">
+        `,
+        focusConfirm: false,
+        showCancelButton: true,
+        preConfirm: () => {
+          const selectInput = document.getElementById('swal-select') as HTMLSelectElement;
+          const input = document.getElementById('swal-input') as HTMLInputElement;
+          const productId = selectInput.value;
+          const newPrice = input.value;
+          return { productId, newPrice };
+        }
+      });
+
+      if (formValues) {
+        const { productId, newPrice } = formValues;
+
+        const selectedProduct = productStockQueryResponse.find(product => product.productStockId === Number(productId));
+
+        Swal.fire({
+          title: 'Confirmation',
+          text: `Change the price of ${selectedProduct?.name} from ${selectedProduct?.price} TL to ${newPrice} TL?`,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'No',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            changeProductPrice(productId, newPrice).then((response) => {
+              handleApiResponse(response, response.data.message);
+            }).catch((error) => {
+              handleApiResponse(error, error.response.data.message);
+            });
+          }
+        });
+      }
+    } else {
+      Swal.fire({ title: 'You do not have permission to perform this action!' });
+    }
   }
 
   const isCurrentUserAdmin = () => {
@@ -300,23 +363,23 @@ const Home: React.FC = () => {
                 20 TL
               </button>
             </div>
-            
+
             {isCurrentUserAdmin() && (
-            <div className="machine-operations">
-              <h5> Machine Operations </h5>
-              <button className="operation-button" onClick={() => handleReset()}>
-                Reset
-              </button>
-              <button className="operation-button" onClick={() => handleCollectMoney()}>
-                Collect Money
-              </button>
-              <button className="operation-button" onClick={() => handleAddToStocks()}>
-                Add to Stocks
-              </button>
-              <button className="operation-button" onClick={() => handleRaiseDiscount()}>
-                Raise / Discount
-              </button>
-            </div>
+              <div className="machine-operations">
+                <h5> Machine Operations </h5>
+                <button className="operation-button" onClick={() => handleReset()}>
+                  Reset
+                </button>
+                <button className="operation-button" onClick={() => handleCollectMoney()}>
+                  Collect Money
+                </button>
+                <button className="operation-button" onClick={() => handleAddToStocks()}>
+                  Add to Stocks
+                </button>
+                <button className="operation-button" onClick={() => handleChangeProductPrice()}>
+                  Change Product Price
+                </button>
+              </div>
             )}
           </div>
         </div>
