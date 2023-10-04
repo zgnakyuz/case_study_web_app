@@ -31,7 +31,7 @@ public class ProductStock {
     private Product product;
 
     @Min(0)
-    @Max(30)
+    @Max(50)
     private Integer count;
 
     public ProductStock(Product product, int count) {
