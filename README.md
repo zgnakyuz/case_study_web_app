@@ -36,3 +36,6 @@ If you use these, a database named case_study must be created at your local Post
 same (5432), and you can change your username and password with your credentials. If you want to edit the properties, you need to
 generate the .jar file again. You can execute the command "mvn clean package" in cmd console (make sure the directory is backend folder).
 The newly generated file will be inside the "target" folder.
+
+Requirements:
+- PostgreSQL 16.0
