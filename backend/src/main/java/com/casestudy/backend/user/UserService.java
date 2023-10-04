@@ -19,7 +19,14 @@ public class UserService {
         if (user.getMoney() < coinValue) {
             throw new Exception("User does not have %s TL to insert".formatted(coinValue));
         }
-        user.withdrawMoney(coinValue);
+        user.updateMoney(user.getMoney() - coinValue);
+        userRepository.save(user);
+    }
+
+    public void addMoney(int money, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(""));
+        user.updateMoney(user.getMoney() + money);
         userRepository.save(user);
     }
 

@@ -1,9 +1,11 @@
 package com.casestudy.backend.vendingmachine;
 
 import com.casestudy.backend.common.enums.CoinType;
+import com.casestudy.backend.user.User;
 import com.casestudy.backend.user.UserService;
 import com.casestudy.backend.vendingmachine.productstock.ProductStock;
 import com.casestudy.backend.vendingmachine.productstock.ProductStockService;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -60,20 +62,23 @@ public class VendingMachineServiceImpl implements VendingMachineService {
     }
 
     @Override
-    public String dispenseProduct(Long productStockId) throws Exception {
+    public Pair<String, Integer> dispenseProductAndReturnChange(Long productStockId, Long userId) throws Exception {
         final ProductStock productInStock = productStockService.isProductInStock(productStockId);
+        int change;
 
         if (productInStock.getProduct() != null) {
             int price = productInStock.getProduct().getPrice();
-            vendingMachine.updateTempMoney(vendingMachine.getTempMoney() - price);
+            change = vendingMachine.getTempMoney() - price;
+            vendingMachine.updateTempMoney(0);
             vendingMachine.updateTotalMoney(vendingMachine.getTotalMoney() + price);
             productStockService.dispenseProduct(productStockId);
+            userService.addMoney(change, userId);
         } else {
             throw new Exception("Product is out of stock!");
         }
 
         saveState(vendingMachine);
-        return productInStock.getProduct().getName();
+        return Pair.of(productInStock.getProduct().getName(), change);
     }
 
     @Override
@@ -85,8 +90,13 @@ public class VendingMachineServiceImpl implements VendingMachineService {
     }
 
     @Override
-    public List<CoinType> refund() {
-        return null;
+    public int refund(Long userId) {
+        int machineTempMoney = vendingMachine.getTempMoney();
+        vendingMachine.updateTempMoney(0);
+        userService.addMoney(machineTempMoney, userId);
+
+        saveState(vendingMachine);
+        return machineTempMoney;
     }
 
     @Override

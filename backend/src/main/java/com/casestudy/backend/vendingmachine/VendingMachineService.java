@@ -3,6 +3,7 @@ package com.casestudy.backend.vendingmachine;
 import com.casestudy.backend.common.enums.CoinType;
 import com.casestudy.backend.product.Product;
 import com.casestudy.backend.vendingmachine.productstock.ProductStock;
+import org.springframework.data.util.Pair;
 
 import java.util.List;
 
@@ -12,11 +13,11 @@ public interface VendingMachineService {
     public VendingMachine getState();
     public void saveState(VendingMachine vendingMachine);
 
-    public String dispenseProduct(Long productStockId) throws Exception;
+    public Pair<String, Integer> dispenseProductAndReturnChange(Long productStockId, Long userId) throws Exception;
 
     public void insertCoin(CoinType coin, Long userId) throws Exception;
 
-    public List<CoinType> refund();
+    public int refund(Long userId);
 
     public void reset();
 }

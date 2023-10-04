@@ -54,7 +54,7 @@ public class User {
         this.money = money;
     }
 
-    public void withdrawMoney(int money) {
-        this.money -= money;
+    public void updateMoney(int money) {
+        this.money = money;
     }
 }
