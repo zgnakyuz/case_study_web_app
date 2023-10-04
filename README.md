@@ -11,6 +11,8 @@ Requirements:
 
 ## For backend:
 
+- JAR Link to download: https://drive.google.com/file/d/1NAo_Ik7rhHV6OyItnKWv4ssofr-9TuCB/view?usp=sharing
+  
 You can launch the backend application in cmd with this command: "java -jar backend-0.0.1-SNAPSHOT.jar". Make sure that the file
 backend-0.0.1-SNAPSHOT.jar is at the same directory as the console.
 The application will be launched at port 8080.
