@@ -2,7 +2,7 @@
 
 ## For frontend:
 
-Change directory as the frontend folder in cmd and execute "npm install" command for the node_modules.
+Open cmd console in the frontend folder and execute "npm install" command for the node_modules.
 After the install, you can execute "npm start" command to launch the frontend application. It will run on the port 3000 (localhost:3000).
 
 Requirements:
