@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { getAllProducts, getSelectedProduct } from "../../services/user.service";
-import { insertCoin, getMachineState, dispenseProduct } from "../../services/machine.service";
+import { insertCoin, getMachineState, dispenseProductAndReturnChange, refund } from "../../services/machine.service";
 import IUser from '../../types/user.type';
 import * as AuthService from "../../services/auth.service";
 import Swal from 'sweetalert2';
@@ -92,7 +92,7 @@ const Home: React.FC = () => {
                     cancelButtonText: 'No',
                   }).then((result) => {
                     if (result.isConfirmed) {
-                      dispenseProduct(productId).then((response) => {
+                      dispenseProductAndReturnChange(productId, currentUser.id).then((response) => {
                         handleApiResponse(response, response.data.message);
                       }).catch((error) => {
                         handleApiResponse(error, error.response.data.message);
@@ -116,6 +116,25 @@ const Home: React.FC = () => {
       Swal.fire({ title: 'Log in to select a product!' });
     }
   };
+
+  const handleRefund = () => {
+    Swal.fire({
+      title: 'Confirmation',
+      text: 'Do you want to refund money?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        refund(currentUser?.id).then((response) => {
+          handleApiResponse(response, response.data.message);
+        }).catch((error) => {
+          handleApiResponse(error, error.response.data.message);
+        });
+      }
+    });
+  }
 
   const handleInsertCoin = (coinType: CoinType) => {
     if (currentUser) {
@@ -173,6 +192,11 @@ const Home: React.FC = () => {
               <div className="user-balance">
                 <h5>Loaded in machine:</h5>
                 <p>{machineState.tempMoney} TL</p>
+                {currentUser ? (
+                  <button className="refund-button" onClick={() => handleRefund()}>
+                    Refund money
+                  </button>
+                ) : null}
               </div>
             ) : (
               <div className="user-balance">
@@ -180,6 +204,7 @@ const Home: React.FC = () => {
                 <p>Machine state not available</p>
               </div>
             )}
+
             <div className="insert-coin">
               <h5> Insert Coin </h5>
               <button className="coin-button" onClick={() => handleInsertCoin(CoinType.ONE)}>

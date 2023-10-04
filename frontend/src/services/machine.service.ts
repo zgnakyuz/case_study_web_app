@@ -12,6 +12,10 @@ export const insertCoin = (coinType: CoinType, userId: number) => {
     return axios.put(MACHINE_URL + "/balance" + "/" + coinValue + "?userId=" + userId);
 }
 
-export const dispenseProduct = (productStockId: number) => {
-    return axios.put(MACHINE_URL + "/productStock" + "/" + productStockId);
+export const dispenseProductAndReturnChange = (productStockId: number, userId: number) => {
+    return axios.put(MACHINE_URL + "/productStock" + "/" + productStockId + "?userId=" + userId);
+}
+
+export const refund = (userId: number) => {
+    return axios.put(MACHINE_URL + "/balance" + "?userId=" + userId)
 }
