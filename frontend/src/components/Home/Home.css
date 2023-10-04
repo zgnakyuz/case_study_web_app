@@ -33,5 +33,14 @@
   
   .coin-button {
     margin-top: 10px;
-    margin-right: 25px; /* Add margin between buttons */
+    margin-right: 25px;
+  }
+
+  .machine-operations {
+    padding: 10px;
+  }
+
+  .operation-button {
+    margin-top: 10px;
+    margin-right: 25px;
   }

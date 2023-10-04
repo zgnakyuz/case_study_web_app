@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { getAllProducts, getSelectedProduct } from "../../services/user.service";
-import { insertCoin, getMachineState, dispenseProductAndReturnChange, refund } from "../../services/machine.service";
+import { insertCoin, getMachineState, dispenseProductAndReturnChange, refund, reset, collectMoney } from "../../services/machine.service";
 import IUser from '../../types/user.type';
 import * as AuthService from "../../services/auth.service";
 import Swal from 'sweetalert2';
@@ -163,6 +163,86 @@ const Home: React.FC = () => {
     }
   };
 
+  const handleReset = () => {
+    Swal.fire({
+      title: 'Confirmation',
+      text: 'Do you want to reset machine?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        reset().then((response) => {
+          handleApiResponse(response, response.data.message);
+        }).catch((error) => {
+          handleApiResponse(error, error.response.data.message);
+        });
+      }
+    });
+  }
+
+  const handleCollectMoney = () => {
+    Swal.fire({
+      title: 'Confirmation',
+      text: 'Do you want to collect all money?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        collectMoney(currentUser?.id).then((response) => {
+          handleApiResponse(response, response.data.message);
+        }).catch((error) => {
+          handleApiResponse(error, error.response.data.message);
+        });
+      }
+    });
+  }
+
+  const handleAddToStocks = () => {
+    // Swal.fire({
+    //   title: 'Confirmation',
+    //   text: 'Select the product you want to add stock',
+    //   icon: 'question',
+    //   showCancelButton: true,
+    //   confirmButtonText: 'Yes',
+    //   cancelButtonText: 'No',
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //     collectMoney(currentUser?.id).then((response) => {
+    //       handleApiResponse(response, response.data.message);
+    //     }).catch((error) => {
+    //       handleApiResponse(error, error.response.data.message);
+    //     });
+    //   }
+    // });
+  }
+
+  const handleRaiseDiscount = () => {
+    // Swal.fire({
+    //   title: 'Confirmation',
+    //   text: 'Select the product you want to add stock',
+    //   icon: 'question',
+    //   showCancelButton: true,
+    //   confirmButtonText: 'Yes',
+    //   cancelButtonText: 'No',
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //     collectMoney(currentUser?.id).then((response) => {
+    //       handleApiResponse(response, response.data.message);
+    //     }).catch((error) => {
+    //       handleApiResponse(error, error.response.data.message);
+    //     });
+    //   }
+    // });
+  }
+
+  const isCurrentUserAdmin = () => {
+    return currentUser && currentUser.roles?.includes("ROLE_ADMIN");
+  }
+
   return (
     <div className="container">
       {loading ? (
@@ -185,7 +265,7 @@ const Home: React.FC = () => {
           </div>
           <div className="balance-side">
             <div className="user-balance">
-              <h5>User balance:</h5>
+              <h5>User Balance:</h5>
               <p>{currentUser?.money} TL</p>
             </div>
             {machineState ? (
@@ -220,6 +300,24 @@ const Home: React.FC = () => {
                 20 TL
               </button>
             </div>
+            
+            {isCurrentUserAdmin() && (
+            <div className="machine-operations">
+              <h5> Machine Operations </h5>
+              <button className="operation-button" onClick={() => handleReset()}>
+                Reset
+              </button>
+              <button className="operation-button" onClick={() => handleCollectMoney()}>
+                Collect Money
+              </button>
+              <button className="operation-button" onClick={() => handleAddToStocks()}>
+                Add to Stocks
+              </button>
+              <button className="operation-button" onClick={() => handleRaiseDiscount()}>
+                Raise / Discount
+              </button>
+            </div>
+            )}
           </div>
         </div>
       )}

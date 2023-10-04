@@ -11,7 +11,6 @@ import IUser from './types/user.type';
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home/Home";
-import BoardAdmin from "./components/BoardAdmin";
 
 import EventBus from "./common/EventBus";
 
@@ -32,7 +31,7 @@ const App: React.FC = () => {
       }
     };
   
-    fetchUserData(); // Call the function to fetch user data
+    fetchUserData();
   
     EventBus.on("logout", logOut);
   
@@ -76,13 +75,6 @@ const App: React.FC = () => {
           VendingMachine
         </Link>
         <div className="navbar-nav mr-auto">
-          {isUserAdmin && (
-            <li className="nav-item">
-              <Link to={"/admin"} className="nav-link">
-                Admin Board
-              </Link>
-            </li>
-          )}
         </div>
 
         {currentUser ? (
@@ -119,7 +111,6 @@ const App: React.FC = () => {
           <Route path="/home" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/admin" element={<BoardAdmin />} />
         </Routes>
       </div>
     </div>
