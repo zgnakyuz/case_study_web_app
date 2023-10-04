@@ -1,3 +1,5 @@
+You can reach the documentation and JAR file at this drive: https://drive.google.com/drive/folders/16E37EnU3PANL4lI1JC5-mJg7UoD5eNLM?usp=sharing
+
 ### To run the application in your local machine:
 
 ## For frontend:
