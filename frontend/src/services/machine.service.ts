@@ -9,5 +9,9 @@ export const getMachineState = () => {
 
 export const insertCoin = (coinType: CoinType, userId: number) => {
     const coinValue = CoinType[coinType];
-    return axios.put(MACHINE_URL + "/balance/" + coinValue + "?userId=" + userId);
+    return axios.put(MACHINE_URL + "/balance" + "/" + coinValue + "?userId=" + userId);
+}
+
+export const dispenseProduct = (productStockId: number) => {
+    return axios.put(MACHINE_URL + "/productStock" + "/" + productStockId);
 }

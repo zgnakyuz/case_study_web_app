@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { getAllProducts, getSelectedProduct } from "../../services/user.service";
-import { insertCoin, getMachineState } from "../../services/machine.service";
+import { insertCoin, getMachineState, dispenseProduct } from "../../services/machine.service";
 import IUser from '../../types/user.type';
 import * as AuthService from "../../services/auth.service";
 import Swal from 'sweetalert2';
@@ -64,6 +64,16 @@ const Home: React.FC = () => {
     fetchUserData();
   }, []);
 
+  const handleApiResponse = (response: any, successMessage: string) => {
+    if (response.status === 200) {
+      Swal.fire({ title: successMessage, icon: 'success' }).then((result) => {
+        window.location.reload();
+      });
+    } else if (response.response && response.response.data && response.response.data.message) {
+      Swal.fire({ title: response.response.data.message, icon: 'error' });
+    }
+  };
+
   const handleSelectProduct = async (productId: number) => {
     if (currentUser) {
       if (machineState) {
@@ -71,22 +81,29 @@ const Home: React.FC = () => {
           (response) => {
             if (response.data) {
               const product = response.data;
-              if (machineState.tempMoney >= product.price) {
-                Swal.fire({
-                  title: 'Confirmation',
-                  text: 'Do you want to continue with this purchase?',
-                  icon: 'question',
-                  showCancelButton: true,
-                  confirmButtonText: 'Yes',
-                  cancelButtonText: 'No',
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    
-                    console.log('User confirmed the purchase.');
-                  }
-                });
+              if (product.count > 0) {
+                if (machineState.tempMoney >= product.price) {
+                  Swal.fire({
+                    title: 'Confirmation',
+                    text: 'Do you want to continue with this purchase?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      dispenseProduct(productId).then((response) => {
+                        handleApiResponse(response, response.data.message);
+                      }).catch((error) => {
+                        handleApiResponse(error, error.response.data.message);
+                      });
+                    }
+                  });
+                } else {
+                  Swal.fire({ title: 'Please insert coin to get this product!' });
+                }
               } else {
-                Swal.fire({ title: 'User cannot afford the selected product.' });
+                Swal.fire({ title: 'Product is out of stock!' });
               }
             }
             setLoading(false);
@@ -113,16 +130,10 @@ const Home: React.FC = () => {
         }).then((result) => {
           if (result.isConfirmed) {
             insertCoin(coinType, currentUser.id).then((response) => {
-              if (response.status === 200) {
-                Swal.fire({ title: response.data.message, icon: 'success' }).then((result) => {
-                  window.location.reload();
-                });
-              }
+              handleApiResponse(response, response.data.message);
             }).catch((error) => {
-              if (error.response && error.response.data && error.response.data.message) {
-                  Swal.fire({ title: error.response.data.message, icon: 'error' });
-              }
-          });
+              handleApiResponse(error, error.response.data.message);
+            });
           }
         });
       } else {
