@@ -25,9 +25,9 @@ I used PostgreSQL for database operations. You can find the necessary properties
 in the file *application.properties* at resources folder in backend. By default, I used this properties:
 
 
-spring.datasource.url=jdbc:postgresql://localhost:5432/case_study
-spring.datasource.username=postgres
-spring.datasource.password=postgres
+- spring.datasource.url=jdbc:postgresql://localhost:5432/case_study
+- spring.datasource.username=postgres
+- spring.datasource.password=postgres
 
 
 If you use these, a database named case_study must be created at your local Postgres server. Make sure that your port is 
